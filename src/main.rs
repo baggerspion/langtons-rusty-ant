@@ -1,26 +1,18 @@
 mod ant;
-mod board;
+mod game;
 
-use ant::{Ant, Direction};
-use board::Board;
+use std::{thread, time};
+
+const WIDTH: usize = 20;
+const HEIGHT: usize = 20;
+const SLEEP: time::Duration = time::Duration::from_millis(1000);
 
 fn main() {
-    let mut ant = Ant::new(0, 0, Direction::UP);
-    let mut board = Board::new();
+    let mut game = game::Game::new(WIDTH, HEIGHT);
 
-    for _ in 1..200 {        
-        // We turn left or right depending on the square state
-        let position = ant.get_position();
-        let square = board.get_square(position.0, position.1);
-
-        if square {
-            ant.turn(Direction::LEFT);
-        } else {
-            ant.turn(Direction::RIGHT);
-        }
-
-        // No matter what we flip the state of the current square and then move on
-        board.flip(position.0, position.1);
-        ant.make_move(1);
+    loop {
+        println!("{}", game);
+        game.play();        
+        thread::sleep(SLEEP);
     }
 }
