@@ -1,5 +1,4 @@
 use crate::ant::{Ant, Direction};
-use std::fmt;
 
 pub struct Game {
     board: Vec<Vec<bool>>,
@@ -14,21 +13,27 @@ impl Game {
         }
     }
 
-    pub fn play(&mut self) {
+    pub fn advance(&mut self) {
         let position = self.ant.get_position();
         let active = self.board[position.0][position.1];
 
+        // Turn left or right depending on the state 
+        // of the current square
         if active { 
             self.ant.turn(Direction::LEFT);
         } else { 
             self.ant.turn(Direction::RIGHT);
         }
+
+        // Flip the state of the square
+        let position = self.ant.get_position();
+        self.board[position.0][position.1] = !self.board[position.0][position.1];
+
+        // Move one square forward
         self.ant.make_move(1);
     }
-}
 
-impl fmt::Display for Game {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    pub fn draw(&self) -> String {
         let mut board = String::new();
         let position = self.ant.get_position();
 
@@ -46,6 +51,6 @@ impl fmt::Display for Game {
         }
         board = board + "\n";
 
-        write!(f, "{}", board)
+        board
     }
 }
